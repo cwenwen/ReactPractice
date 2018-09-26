@@ -640,7 +640,6 @@ NavBar - rendered
 Counters - rendered
 (3) Counter - rendered  // counter 剩三個
 Counter - unmount       // 把要 delete 的 counter 從 DOM 移除前，會執行 componentWillUnmount()
-*/
 ```
 
 - 這階段適合做一些清理。
