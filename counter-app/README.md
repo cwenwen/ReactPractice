@@ -511,13 +511,13 @@ render() {
 `<NavBar />` 是 stateless functional component，其實不用給他一個 class，可以把他變成 function。
 
 ```jsx
-const NavBar = () => {
+const NavBar = props => {
   return ( 
     <nav className="navbar navbar-light bg-light">
       <a className="navbar-brand" href="#">
         Navbar 
         <span className="badge badge-pill badge-secondary">
-          {this.props.totalCounters}
+          {props.totalCounters}
         </span>
       </a>
     </nav> 
@@ -549,3 +549,99 @@ const { onReset, counters, onDelete, onIncrement } = this.props;
 // 接下來都可以只用 onReset, counters, onDelete, onIncrement
 // 不用 this.props
 ```
+
+## Session 3: lifecycle hooks
+
+### Mount 
+1. constructor
+2. render
+3. componentDidMount
+
+### Update
+1. render
+2. componentDidUpdate
+
+## Unmount
+1. componentWillUnmount
+  
+常用就以上幾種。  
+
+
+## Mounting phase
+
+發生在 component 放上 DOM 時（mount），  
+從 constructor 開始跑：  
+
+```jsx
+constructor(props) {
+  super(props);
+  this.state = this.props.something;
+}
+```
+- 在這階段可以直接指定 state，不用 setState()
+
+記得放上 props 當參數，props 也要給 `super()`。  
+再來跑 render，所有的子元素也會 render 到 DOM 上。  
+再來當 component 放上 DOM 後，會跑 `componentDidMount()`：  
+
+```jsx
+componentDidMount() {
+  // Ajax call
+  this.setState({ callback resp })
+}
+```
+
+- 在這階段很適合用 Ajax 來向 server 拿資料
+- 拿完後更新 state
+
+Component mounted 就是元素在 DOM 上了。  
+
+## Updating phase
+
+發生在 component 的 state 或 props 更新時。  
+例如按下 Increment 的按鈕後，所有相關的 component 都會被 render：
+
+```jsx
+// browser console
+App - rendered
+NavBar - rendered
+Counters - rendered
+(4) Counter - rendered
+```
+
+注意：被 render 不代表 DOM 有被更新，只有被改變的元素會更新 DOM。  
+接著會跑 `componentDidUpdate()`：  
+
+```jsx
+// <Counter /> 元素內
+componentDidUpdate(prevProps, prevState) {
+  console.log('prevProps', prevProps);
+  console.log('prevState', prevState);
+  if (prevProps.counter.value !== this.props.value) {
+  // Ajax call and get new data from the server
+  }
+}
+// 在第一個 counter 按了 increment，全部 render 後會 console.log 舊的 props 和 state
+// 第一個 counter 舊的 prop：  counter: {id: 1, value: 4}
+// 第一個 counter 新的 prop：  counter: {id: 1, value: 5}
+```
+
+- 這階段會有新的 state 或 props，可以比較新的和舊的
+- 如果有改變，可以在這階段發 Ajax 向 server 拿資料，沒改變就不用浪費 request 了。
+
+## Unmounting phase
+
+發生在 component 被移除 DOM 的前一刻。按下 Delete 的按鈕後：  
+
+```jsx
+// browser console
+App - rendered
+NavBar - rendered
+Counters - rendered
+(3) Counter - rendered  // counter 剩三個
+Counter - unmount       // 把要 delete 的 counter 從 DOM 移除前，會執行 componentWillUnmount()
+*/
+```
+
+- 這階段適合做一些清理。
+- 像是有設定 timer，或是各種 listener，隨著元素從 DOM 上移除，也可以把它們拿掉了。
