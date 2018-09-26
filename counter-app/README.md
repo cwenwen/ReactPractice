@@ -561,7 +561,7 @@ const { onReset, counters, onDelete, onIncrement } = this.props;
 1. render
 2. componentDidUpdate
 
-## Unmount
+### Unmount
 1. componentWillUnmount
   
 常用就以上幾種。  
