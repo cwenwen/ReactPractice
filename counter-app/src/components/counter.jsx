@@ -2,8 +2,7 @@ import React, { Component } from "react";
 
 class Counter extends Component {
   state = {
-    count: 0,
-    tags: []
+    count: 0
   };
 
   getBadgeClasses() {
@@ -17,23 +16,9 @@ class Counter extends Component {
     return count === 0 ? "Zero" : count;
   }
 
-  renderTags() {
-    if (this.state.tags.length === 0) return <p>There are no tags!</p>;
-    return (
-      <ul>
-        {this.state.tags.map(tag => (
-          <li key={tag}>{tag}</li>
-        ))}
-      </ul>
-    );
-  }
-
-  handleIncrement = () => {
+  handleIncrement = (product) => {
+    console.log(product)
     this.setState({ count: this.state.count + 1 });
-  };
-
-  doHandleIncrement = () => {
-    this.handleIncrement({ id: 1 });
   };
 
   render() {
@@ -41,14 +26,11 @@ class Counter extends Component {
       <div>
         <span className={this.getBadgeClasses()}>{this.formatCount()}</span>
         <button
-          onClick={this.handleIncrement}
+          onClick={ () => this.handleIncrement({ id: this.props.id })}
           className="btn btn-secondary btn-sm"
         >
           Increment
         </button>
-        <br />
-        {this.state.tags.length === 0 && "Please create a new tag!"}
-        {this.renderTags()}
       </div>
     );
   }
