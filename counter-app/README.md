@@ -578,9 +578,9 @@ constructor(props) {
   this.state = this.props.something;
 }
 ```
-- 在這階段可以直接指定 state，不用 setState()
+- 在這階段可以直接指定 `this.state`，不用 setState()
 
-記得放上 props 當參數，props 也要給 `super()`。  
+記得放上 props 當參數。constructor 第一行一定是 `super(props)`。  
 再來跑 render，所有的子元素也會 render 到 DOM 上。  
 再來當 component 放上 DOM 後，會跑 `componentDidMount()`：  
 
