@@ -7,12 +7,13 @@ class Board extends Component {
   }
 
   renderSquare = i => {
-    let { onClick } = this.props
+    let { onClick, squares } = this.props;
     return (
       <Square
         key={i}
         id={i}
-        onClick={onClick}
+        onClick={() => onClick(i)}
+        value={squares[i]}
       />
     )
   }
