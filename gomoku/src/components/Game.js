@@ -4,7 +4,9 @@ import Btn from './Btn';
 import calcWinner from '../functions/calcWinner';
 
 const initState  = {
-  squares: Array(19 * 19).fill(null),
+  history: [{
+    squares: Array(19 * 19).fill(null),
+  }],
   whiteIsNext: true,
   winner: null
 };
@@ -16,13 +18,18 @@ class App extends Component {
   }
 
   handleClick = i => {
-    const squares = [...this.state.squares];
-    if (this.state.winner || squares[i]) return;
-    squares[i] = this.state.whiteIsNext ? 'piece-white': 'piece-black';
+    const { winner, whiteIsNext, history } = this.state;
+    const current = history[history.length - 1];
+    const squares = [...current.squares];
+
+    if (winner || squares[i]) return;
+    squares[i] = whiteIsNext ? 'piece-white': 'piece-black';
     
     this.setState({ 
-      squares,
-      whiteIsNext: !this.state.whiteIsNext,
+      history: history.concat([{
+        squares
+      }]),
+      whiteIsNext: !whiteIsNext,
       winner: calcWinner(squares)
     });
   }
@@ -31,21 +38,33 @@ class App extends Component {
     this.setState(initState);
   }
   
-  redoStep = () => {}
+  redoStep = () => {
+    const history = [...this.state.history];
+    if (history.length < 2) return;
+    history.pop();
+    const current = history[history.length - 1];
+    this.setState({ 
+      history,
+      whiteIsNext: !this.state.whiteIsNext,
+      winner: calcWinner(current.squares)
+    })
+  }
 
   replayGame = () => {}
 
   render() {
+    const { winner, whiteIsNext, history } = this.state;
+    const current = history[history.length - 1];
     return (
       <div className='app'>
         <div className="info">
-          {this.state.winner ?
-            <div className="status"><b>{this.state.winner === 'white' ? 'WHITE' : 'BLACK'}</b> wins!</div> :
-            <div className="status">Next player is <b>{this.state.whiteIsNext ? 'WHITE' : 'BLACK'}</b></div>
+          {winner ?
+            <div className="status"><b>{winner === 'white' ? 'WHITE' : 'BLACK'}</b> wins!</div> :
+            <div className="status">Next player is <b>{whiteIsNext ? 'WHITE' : 'BLACK'}</b></div>
           }
         </div>
         <Board 
-          squares={this.state.squares}
+          squares={current.squares}
           onClick={i => {this.handleClick(i)}}
         />
         <div className="info">
