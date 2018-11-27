@@ -50,7 +50,18 @@ class App extends Component {
     })
   }
 
-  replayGame = () => {}
+  replayGame = () => {
+    const playbook = [...this.state.history];
+    const history = [];
+    const showHistory = i => {
+      history.push(playbook[i]);
+      this.setState({ history });
+    }
+
+    for (let i = 0; i < playbook.length; i++) {
+      setTimeout(() => { showHistory(i) }, 1000 * i);
+    }
+  }
 
   render() {
     const { winner, whiteIsNext, history } = this.state;
@@ -69,8 +80,10 @@ class App extends Component {
         />
         <div className="info">
           <Btn name="Restart" onClick={this.restartGame} />
-          <Btn name="Redo" onClick={this.redoStep} />
-          <Btn name="Replay" onClick={this.replayGame} />
+          {winner ? 
+            <Btn name="Replay" onClick={this.replayGame} /> : 
+            <Btn name="Redo" onClick={this.redoStep} />
+          }
         </div>
       </div>
     );
