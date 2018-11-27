@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Board from './Board';
 import Btn from './Btn';
-import calcWinner from './calcWinner';
+import calcWinner from '../functions/calcWinner';
 
 const initState  = {
   squares: Array(19 * 19).fill(null),
